@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import torch 
 import torch.nn as tnn
 import torch.optim as topt
@@ -68,7 +72,7 @@ if __name__ == "__main__":
     
     trainingLoader, validationLoader, class_names = processImages("data", imgSlotSize=32)
 
-    model = detectionModel(num_classes=2)
+    model = detectionModel(outputs=2)
     model.to(device)
 
     training(model, trainingLoader, validationLoader, device, num_epochs=10, learningRate=0.001)
