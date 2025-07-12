@@ -25,16 +25,16 @@ model.eval()
 def prediction(imgLocation, class_names):
     img = Image.open(imgLocation).convert("RGB")
     img = transform(img).unsqueeze(0)
-    img = image.to(device)
+    img = img.to(device)
 
     with torch.no_grad():
         outputs = model(img)
         _, predicted = torch.max(outputs.data, 1)
         predictedClass = class_names[predicted.item()]
-        print(f"Prediction: {predicted_class}")
+        print(f"Prediction: {predictedClass}")
 
-class_names = ["Real", "AI-generated"]
+class_names = ["Fake", "Real"]
 
 if __name__ == "__main__":
-    testImgLocation = "dataset/test/fake/0351.jpg"
+    testImgLocation = "{Image Path}"
     prediction(testImgLocation, class_names)

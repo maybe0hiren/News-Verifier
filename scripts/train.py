@@ -29,7 +29,8 @@ def evaluation(model, loader, device):
         return accuracy
 
 def training(model, trainingLoader, validationLoader, device, num_epochs=10, learningRate=0.001):
-    modelError = tnn.CrossEntropyLoss()
+    class_weights = torch.tensor([1.0, 2.0]).to(device)
+    modelError = tnn.CrossEntropyLoss(weight=class_weights)
     optimizer = topt.Adam(model.parameters(), lr = learningRate)
     best_accuracy = 0.0
 
@@ -75,4 +76,8 @@ if __name__ == "__main__":
     model = detectionModel(outputs=2)
     model.to(device)
 
-    training(model, trainingLoader, validationLoader, device, num_epochs=10, learningRate=0.001)
+    training(model, trainingLoader, validationLoader, device, num_epochs=20, learningRate=0.001)
+
+    # for images, labels in trainingLoader:
+    #     print("Sample labels:", labels[:10])
+    #     break
