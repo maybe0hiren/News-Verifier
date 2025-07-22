@@ -26,5 +26,5 @@ def getHexadecimal(dctArray1D):
         else:
             binaryHash = binaryHash + '0'
     hexadecimalHash = '{:0{}x}'.format(int(binaryHash, 2), len(binaryHash) // 4)
-    print(hexadecimalHash)
+    return hexadecimalHash
 
