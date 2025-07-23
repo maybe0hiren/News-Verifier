@@ -3,6 +3,9 @@
 #include <string>
 
 int main() {
+    int key;
+    std::string hexDecValue;
+
     Py_Initialize();
 
     PyRun_SimpleString("import sys");
@@ -24,8 +27,7 @@ int main() {
 
             if (pKey != nullptr) {
                 if (PyLong_Check(pKey)) {
-                    int key = PyLong_AsLong(pKey);
-                    std::cout << "Key: " << key << std::endl;
+                    key = PyLong_AsLong(pKey);
                 } 
                 else {
                     std::cerr << "Error: Integer." << std::endl;
@@ -50,8 +52,7 @@ int main() {
 
             if (pHexDecValue != nullptr) {
                 if (PyUnicode_Check(pHexDecValue)) {
-                    std::string hexDecValue = PyUnicode_AsUTF8(pHexDecValue);
-                    std::cout << "Returned String: " << hexDecValue << std::endl;
+                    hexDecValue = PyUnicode_AsUTF8(pHexDecValue);
                 } 
                 else {
                     std::cerr << "Error: getHexadecimal()" << std::endl;
@@ -69,11 +70,14 @@ int main() {
         }
 
         Py_DECREF(pModule);
-    } else {
+    } 
+    else {
         std::cerr << "Error: Python Module" << std::endl;
         PyErr_Print();
     }
 
     Py_Finalize();
+
+    std::cout << "Key: " << key << " Value: " << hexDecValue << std::endl; 
     return 0;
 }
