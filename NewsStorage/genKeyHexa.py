@@ -10,14 +10,16 @@ def create1dArray(imagePath):
     dctArray1D = dctArray8x8.flatten()
     return dctArray1D
 
-def createKey(dctArray1D):
+def createKey(imagePath):
+    dctArray1D = create1dArray(imagePath)
     stdDev = np.var(dctArray1D)
     s = int(stdDev)
     med = int(10000*np.median(dctArray1D))
     key = s - med
     return key
 
-def getHexadecimal(dctArray1D):
+def getHexadecimal(imagePath):
+    dctArray1D = create1dArray(imagePath)
     binaryHash = ""
     median = np.median(dctArray1D[1:])
     for x in dctArray1D:
@@ -27,4 +29,3 @@ def getHexadecimal(dctArray1D):
             binaryHash = binaryHash + '0'
     hexadecimalHash = '{:0{}x}'.format(int(binaryHash, 2), len(binaryHash) // 4)
     return hexadecimalHash
-
