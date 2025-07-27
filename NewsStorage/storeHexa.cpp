@@ -1,4 +1,5 @@
 #include <Python.h>
+#include <sqlite3.h>
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -59,14 +60,45 @@ std::string getHexadecimalValue(PyObject* pModule, const std::string& imagePath)
     return hexDecValue;
 }
 
-void addKeyValue(int key, std::string hexDecValue, std::string storage){
-        std::ofstream file(storage, std::ios::app);
+// void addKeyValue(int key, std::string hexDecValue, std::string storage){
+//         std::ofstream file(storage, std::ios::app);
 
-        if (file.is_open()){
-            file << key << "," << hexDecValue << "\n";
-            file.close();
-            std::cout << "Data Added Successfully!\n";
-        }
+//         if (file.is_open()){
+//             file << key << "," << hexDecValue << "\n";
+//             file.close();
+//             std::cout << "Data Added Successfully!\n";
+//         }
+// }
+
+void dbInsertPair(int key, const std::string hexaDecValue, const std::string &dbName){
+    sqlite3 *db;
+    char *err = 0;
+
+    if (sqlite3_open(dbName.c_str(), &db)){
+        std::cerr << "Error: Opening Database " << sqlite3_errmsg(db) << std::endl;
+        return;
+    }
+
+    std::string table = 
+        "CREATE TABLE IF NOT EXISTS storage ("
+        "key INTEGER, "
+        "hexaDecValue TEXT);";
+    
+    if (sqlite3_exec(db, table.c_str(), 0, 0, &err) != SQLITE_OK){
+        std::cerr << "Table Creation Error: " << err << std::endl;
+        sqlite3_free(err);
+    }
+
+    std::string keyValue = "INSERT INTO storage (key, hexaDecValue) VALUES (" +
+                  std::to_string(key) + ", '" + hexaDecValue + "');";
+    if (sqlite3_exec(db, keyValue.c_str(), 0, 0, &err) != SQLITE_OK){
+        std::cerr << "Inserting Error: " << err << std::endl;
+        sqlite3_free(err);
+    }
+    else{
+        std::cout << "Key: " << key << " - Value: " << hexaDecValue << " Inserted!" << std::endl;
+    }
+    sqlite3_close(db);
 }
 
 
@@ -85,11 +117,9 @@ int main() {
     if (pModule != nullptr) {
         std::string storage = "NewsStorage/storage.csv";
         int key = getKey(pModule, imagePath);
-        std::string hexDecValue = getHexadecimalValue(pModule, imagePath);
-
-        std::cout << "Key: " << key << " Hexadecimal Value: " << hexDecValue << std::endl;
-        addKeyValue(key, hexDecValue, storage);
-
+        std::string hexaDecValue = getHexadecimalValue(pModule, imagePath);
+        std::cout << "Key: " << key << " Hexadecimal Value: " << hexaDecValue << std::endl;
+        dbInsertPair(key, hexaDecValue, "NewsStorage/storage.db");
         Py_DECREF(pModule);
     } 
     else {
