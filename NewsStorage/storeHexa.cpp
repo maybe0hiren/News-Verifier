@@ -4,6 +4,8 @@
 #include <string>
 #include <fstream>
 
+
+
 int getKey(PyObject* pModule, const std::string& imagePath) {
     int key = -1; 
 
@@ -60,15 +62,6 @@ std::string getHexadecimalValue(PyObject* pModule, const std::string& imagePath)
     return hexDecValue;
 }
 
-// void addKeyValue(int key, std::string hexDecValue, std::string storage){
-//         std::ofstream file(storage, std::ios::app);
-
-//         if (file.is_open()){
-//             file << key << "," << hexDecValue << "\n";
-//             file.close();
-//             std::cout << "Data Added Successfully!\n";
-//         }
-// }
 
 void dbInsertPair(int key, const std::string hexaDecValue, const std::string &dbName){
     sqlite3 *db;
@@ -79,25 +72,97 @@ void dbInsertPair(int key, const std::string hexaDecValue, const std::string &db
         return;
     }
 
-    std::string table = 
+    std::string tableQuery = 
         "CREATE TABLE IF NOT EXISTS storage ("
         "key INTEGER, "
         "hexaDecValue TEXT);";
     
-    if (sqlite3_exec(db, table.c_str(), 0, 0, &err) != SQLITE_OK){
+    if (sqlite3_exec(db, tableQuery.c_str(), 0, 0, &err) != SQLITE_OK){
         std::cerr << "Table Creation Error: " << err << std::endl;
         sqlite3_free(err);
     }
 
-    std::string keyValue = "INSERT INTO storage (key, hexaDecValue) VALUES (" +
+    std::string insertQuery = "INSERT INTO storage (key, hexaDecValue1) VALUES (" +
                   std::to_string(key) + ", '" + hexaDecValue + "');";
-    if (sqlite3_exec(db, keyValue.c_str(), 0, 0, &err) != SQLITE_OK){
+    if (sqlite3_exec(db, insertQuery.c_str(), 0, 0, &err) != SQLITE_OK){
         std::cerr << "Inserting Error: " << err << std::endl;
         sqlite3_free(err);
     }
     else{
         std::cout << "Key: " << key << " - Value: " << hexaDecValue << " Inserted!" << std::endl;
     }
+    sqlite3_close(db);
+}
+
+void dbAppendPair(int key, const std::string &hexaDecValue, const std::string &dbName){
+    sqlite3 *db;
+    int opCheck = sqlite3_open(dbName.c_str(), &db);
+
+    if (opCheck != SQLITE_OK){
+        std::cerr << "Error Opening the Database: " << sqlite3_errmsg(db) << std::endl;
+        return;
+    }
+
+    std::string selectQuery = "SELECT ";
+    for (int i = 2; i <= 50; ++i){
+        selectQuery += "hexaDecValue" + std::to_string(i);
+        if (i < 50) selectQuery += ", ";
+    }
+    selectQuery += " FROM storage WHERE key = ?;";
+
+    sqlite3_stmt *selectStmt;
+    opCheck = sqlite3_prepare_v2(db, selectQuery.c_str(), -1, &selectStmt, nullptr);
+
+    if (opCheck != SQLITE_OK){
+        std::cerr << "Prepare select failed: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_close(db);
+        return;
+    }
+
+    sqlite3_bind_int(selectStmt, 1, key);
+
+    int emptyColumn = -1;
+    if (sqlite3_step(selectStmt) == SQLITE_ROW){
+        for (int i = 0; i < 49; ++i){ 
+            const unsigned char *val = sqlite3_column_text(selectStmt, i);
+            if (!val){
+                emptyColumn = i + 2;
+                break;
+            }
+        }
+    }
+
+    sqlite3_finalize(selectStmt);
+
+    if (emptyColumn == -1) {
+        std::cerr << "No empty column found for key " << key << std::endl;
+        sqlite3_close(db);
+        return;
+    }
+
+    std::string updateQuery = "UPDATE storage SET hexaDecValue" + std::to_string(emptyColumn) + " = ? WHERE key = ?;";
+    sqlite3_stmt *updateStmt;
+
+    opCheck = sqlite3_prepare_v2(db, updateQuery.c_str(), -1, &updateStmt, nullptr);
+    if (opCheck != SQLITE_OK) {
+        std::cerr << "Prepare update failed: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_close(db);
+        return;
+    }
+
+    sqlite3_bind_text(updateStmt, 1, hexaDecValue.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int(updateStmt, 2, key);
+
+    opCheck = sqlite3_step(updateStmt);
+
+    if (opCheck != SQLITE_DONE){
+        std::cerr << "Execution Error: " << sqlite3_errmsg(db) << std::endl;
+    }
+    else{
+        std::cout << "Row updated in hexaDecValue" << emptyColumn << "!\n";
+    }
+
+    sqlite3_finalize(updateStmt);
     sqlite3_close(db);
 }
 
@@ -118,8 +183,9 @@ int main() {
         std::string storage = "NewsStorage/storage.csv";
         int key = getKey(pModule, imagePath);
         std::string hexaDecValue = getHexadecimalValue(pModule, imagePath);
-        std::cout << "Key: " << key << " Hexadecimal Value: " << hexaDecValue << std::endl;
-        dbInsertPair(key, hexaDecValue, "NewsStorage/storage.db");
+
+        //Call funtions here;
+        
         Py_DECREF(pModule);
     } 
     else {
