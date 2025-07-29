@@ -2,8 +2,8 @@
 #include <sqlite3.h>
 #include <iostream>
 #include <string>
-#include <fstream>
 
+std::string dbName = "NewsStorage/storage.db";
 
 
 int getKey(PyObject* pModule, const std::string& imagePath) {
@@ -63,7 +63,7 @@ std::string getHexadecimalValue(PyObject* pModule, const std::string& imagePath)
 }
 
 
-void dbInsertPair(int key, const std::string hexaDecValue, const std::string &dbName){
+void dbInsertPair(int key, const std::string hexaDecValue){
     sqlite3 *db;
     char *err = 0;
 
@@ -94,7 +94,7 @@ void dbInsertPair(int key, const std::string hexaDecValue, const std::string &db
     sqlite3_close(db);
 }
 
-void dbAppendPair(int key, const std::string &hexaDecValue, const std::string &dbName){
+void dbAppendPair(int key, const std::string &hexaDecValue){
     sqlite3 *db;
     int opCheck = sqlite3_open(dbName.c_str(), &db);
 
@@ -166,6 +166,35 @@ void dbAppendPair(int key, const std::string &hexaDecValue, const std::string &d
     sqlite3_close(db);
 }
 
+bool checkKey(int key) {
+    sqlite3 *db;
+    sqlite3_stmt *stmt;
+    bool exists = false;
+
+    if (sqlite3_open(dbName.c_str(), &db) != SQLITE_OK) {
+        std::cerr << "Error opening database: " << sqlite3_errmsg(db) << "\n";
+        return false;
+    }
+
+    std::string checkingQuery = "SELECT 1 FROM storage WHERE key = ? LIMIT 1;";
+    if (sqlite3_prepare_v2(db, checkingQuery.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Error: " << sqlite3_errmsg(db) << "\n";
+        sqlite3_close(db);
+        return false;
+    }
+
+    sqlite3_bind_int(stmt, 1, key);
+
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        exists = true; 
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    return exists;
+}
+
 
 int main() {
     Py_Initialize();
@@ -173,18 +202,24 @@ int main() {
     PyRun_SimpleString("import sys");
     PyRun_SimpleString("sys.path.append('NewsStorage')");
 
-    std::string imagePath = "NewsStorage/image.jpg";
+    std::string imagePath = "dataset/train/real/0159.jpg";
 
     PyObject* pPythonFile = PyUnicode_DecodeFSDefault("genKeyHexa");
     PyObject* pModule = PyImport_Import(pPythonFile);
     Py_DECREF(pPythonFile);
 
     if (pModule != nullptr) {
-        std::string storage = "NewsStorage/storage.csv";
         int key = getKey(pModule, imagePath);
         std::string hexaDecValue = getHexadecimalValue(pModule, imagePath);
+        bool keyInDB = checkKey(key);
 
-        //Call funtions here;
+        if (keyInDB){
+            dbAppendPair(key, hexaDecValue);
+        }
+        else{
+            dbInsertPair(key, hexaDecValue);
+        }
+
         
         Py_DECREF(pModule);
     } 
