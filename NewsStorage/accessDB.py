@@ -71,12 +71,12 @@ def keyExists(key):
 if __name__ == "__main__":
     image_path = "dataset/train/fake/0006.jpg"
     key = getKey(image_path)
-    hexa_value = getHexadecValue(image_path)
+    hexadecValue = getHexadecValue(image_path)
 
-    if key == -1 or not hexa_value:
+    if key == -1 or not hexaDecValue:
         pass
 
     if keyExists(key):
-        dbAppendPair(key, hexa_value)
+        dbAppendPair(key, hexaDecValue)
     else:
-        dbInsertPair(key, hexa_value)
+        dbInsertPair(key, hexaDecValue)
