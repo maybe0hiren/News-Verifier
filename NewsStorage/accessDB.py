@@ -4,20 +4,6 @@ from genKeyHexa import createKey, getHexadecimal
 
 database = "NewsStorage/storage.db"
 
-def getKey(image_path):
-    try:
-        return createKey(image_path)
-    except Exception as e:
-        print(f"Error calling createKey: {e}")
-        return -1
-
-def getHexadecValue(image_path):
-    try:
-        return getHexadecimal(image_path)
-    except Exception as e:
-        print(f"Error calling getHexadecimal: {e}")
-        return ""
-
 def dbInsertPair(key, hexa_value):
     conn = sqlite3.connect(database)
     cursor = conn.cursor()
@@ -67,16 +53,27 @@ def keyExists(key):
     conn.close()
     return exists
 
-
-if __name__ == "__main__":
-    image_path = "dataset/train/fake/0006.jpg"
-    key = getKey(image_path)
-    hexadecValue = getHexadecValue(image_path)
+def addPair():
+    image_path = "NewsStorage/image.jpg"
+    try:
+        key = createKey(image_path)
+    except Exception as e:
+        print(f"Error calling createKey: {e}")
+        key = -1
+    try:
+        hexaDecValue = getHexadecimal(image_path)
+    except Exception as e:
+        print(f"Error calling getHexadecimal: {e}")
+        hexaDecValue = ""
 
     if key == -1 or not hexaDecValue:
         pass
-
-    if keyExists(key):
-        dbAppendPair(key, hexaDecValue)
+    
     else:
-        dbInsertPair(key, hexaDecValue)
+        if keyExists(key):
+            dbAppendPair(key, hexaDecValue)
+        else:
+            dbInsertPair(key, hexaDecValue)
+
+if __name__ == "__main__":
+    addPair()
