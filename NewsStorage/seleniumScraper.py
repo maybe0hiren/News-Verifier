@@ -1,64 +1,79 @@
+import os
+import time
+import hashlib
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import requests, os, time
-import hashlib
-from databaseManager import addPair
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import TimeoutException
+from PIL import Image
+import requests
+from databaseManager import addPair  # your existing function
 
-def file_hash(data):
-    return hashlib.md5(data).hexdigest()
-seen_hashes = set()
+# Hash an image file for deduplication
+def hash_image(path):
+    with Image.open(path) as img:
+        img = img.convert('RGB').resize((128, 128))
+        return hashlib.md5(img.tobytes()).hexdigest()
 
-storage = "NewsStorage/images"
-os.makedirs(storage, exist_ok=True)
-
+# Setup Chrome WebDriver with longer page load timeout
 driver = webdriver.Chrome()
-driver.get("WEBSITE HERE")
-time.sleep(20)
-WebDriverWait(driver, 15).until(
-    EC.presence_of_element_located((By.TAG_NAME, "img"))
-)
-images = driver.find_elements(By.TAG_NAME, "img")
-print(f"Found {len(images)} images")
+driver.set_page_load_timeout(300)  # 300 seconds timeout for page load
 
-for i, img in enumerate(images):
+try:
+    driver.get('https://timesofindia.indiatimes.com/')
+except TimeoutException:
+    print("Page load timed out but continuing...")
+
+time.sleep(3)
+
+# Scroll several times to ensure images load
+for _ in range(10):
+    driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.PAGE_DOWN)
     time.sleep(1)
-    src = img.get_attribute("src") or img.get_attribute("data-src") or img.get_attribute("data-srcset")
-    print(f"[{i}] src={src}")
-    if not src:
+
+# Find all image elements on page
+img_elements = driver.find_elements(By.TAG_NAME, 'img')
+observed_hashes = set()
+temp_dir = 'images'
+os.makedirs(temp_dir, exist_ok=True)
+
+# Process each image element
+for idx, img in enumerate(img_elements):
+    img_url = img.get_attribute('src')
+    if not img_url:
         continue
+    img_path = os.path.join(temp_dir, f'toi_{idx}.jpeg')
     try:
-        imageData = requests.get(src).content
-        h = file_hash(imageData)
-        if h in seen_hashes:
-            print(f"Skipping duplicate: {src}")
+        # Download image with timeout
+        r = requests.get(img_url, timeout=10)
+        with open(img_path, 'wb') as f:
+            f.write(r.content)
+        # Compute hash to avoid duplicates
+        h = hash_image(img_path)
+        if h in observed_hashes:
+            os.remove(img_path)
             continue
-        seen_hashes.add(h)
-        imagePath = os.path.join(storage, f"image{i}.jpg")
-        with open(imagePath, "wb") as f:
-            f.write(imageData)
-        print(f"Downloaded image {i} -> {imagePath}")
-        caption = None
+        observed_hashes.add(h)
+        # Extract caption from alt or parent text
+        caption = img.get_attribute('alt') or ''
         try:
-            headline = img.find_element(By.XPATH, "ancestor::a")
-            caption = headline.text.strip()
-        except:
+            parent = img.find_element(By.XPATH, '..')
+            caption = caption or parent.text
+        except Exception:
             pass
-        if not caption:
-            try:
-                container = img.find_element(By.XPATH, "ancestor::div[1]")
-                caption = container.text.strip()
-            except:
-                pass
-        if not caption:
-            caption = img.get_attribute("alt") or img.get_attribute("title")
-        if not caption:
-            caption = "No caption"
-        print(f"Associated headline: {caption}")
-
-        addPair(imagePath, caption)
+        # Save image path using your DB function
+        addPair(img_path, caption)
+        print(f"Saved: {img_path} | Caption: {caption}")
+        if os.path.exists(img_path):
+            os.remove(img_path)
+            print(f"Image '{img_path}' deleted successfully.")
+        else:
+            print(f"Image '{img_path}' not found.")
     except Exception as e:
-        print(f"Error with {src}: {e}")
+        print(f"Error: {e}")
 
+# Cleanup temporary images
+for f in os.listdir(temp_dir):
+    os.remove(os.path.join(temp_dir, f))
+os.rmdir(temp_dir)
 driver.quit()
