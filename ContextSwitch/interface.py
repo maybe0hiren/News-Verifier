@@ -23,11 +23,3 @@ def segmentation(paragraph):
 
     segment_list = [seg for idx, seg in enumerate(segments, 1)]
     return segment_list
-
-# paragraph = ("The car explosion in downtown Miami left three people injured. "
-#              "The blast occurred near the shopping center. "
-#              "Air pollution levels in major cities have reached dangerous levels this year. "
-#              "Governments worldwide are taking action.")
-
-# segments = segmentation(paragraph)
-# print(segments)

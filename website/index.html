@@ -8,19 +8,21 @@
 </head>
 <body>
   <div class="container">
-    <div class="logo">News Reliability Checker</div>
-    <div class="subtitle">
+    <div class="logo" id="logo">TrueTrace</div>
+    <div class="subtitle" id="subtitle">
       Verify the authenticity and reliability of news articles by checking trusted sources and AI detection
     </div>
 
     <div class="input-group">
-      <input type="text" placeholder="Paste news article URL or content here...">
-      <button>🔍 Check News</button>
+      <input type="text" id="news-input" placeholder="Paste news article URL or content here...">
+      <button id="check-btn">🔍 Check News</button>
     </div>
 
-    <div class="note">
+    <div class="note" id="note">
       Enter a news article URL or paste content above to begin verification
     </div>
+    <div class="output" id="output"></div>
   </div>
+  <script src="script.js"></script>
 </body>
 </html>
