@@ -26,7 +26,7 @@ document.getElementById('check-btn').addEventListener('click', async () => {
 
     // Expecting result to be a list of segments (strings)
     if (Array.isArray(result)) {
-      outputDiv.innerHTML = "<strong>Detected Context Segments:</strong><ul>"
+      outputDiv.innerHTML = "<strong>Detected Context Segments:</strong><ul>" +
         result.map(seg => `<li>${seg}</li>`).join('') +
         "</ul>";
     } else {

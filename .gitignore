@@ -1,2 +1,6 @@
 env/
 cache/
+ContextSwitch/signalmedia-1m.jsonl.gz
+signal_media_context_model.pkl
+signal_media_features.pkl
+context_switch_detection/signalmedia-1m.jsonl.gz
