@@ -66,6 +66,7 @@ for idx, img in enumerate(img_elements):
         try:
             parent = img.find_element(By.XPATH, '..')
             caption = caption or parent.text
+            caption = caption.replace("Article image for: ", "")
         except Exception:
             pass
         # Save image path using your DB function

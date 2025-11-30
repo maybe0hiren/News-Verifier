@@ -5,24 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TrueTrace</title>
     <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
     <div class="container">
         <h2>TrueTrace - AI Powered News Verifier</h2>
 
-        <form id="uploadForm">
-
-            <!-- Custom Upload Button -->
-            <label for="imageInput" class="fileUploadBtn"">Select Image</label>
+        <!-- Use div instead of form to avoid native submit -->
+        <div id="uploadForm">
+            <label for="imageInput" class="fileUploadBtn">Select Image</label>
             <input type="file" id="imageInput" accept="image/*" required>
 
+            <img id="preview" style="display:none; max-width:100%; margin-top:15px; border-radius:10px;">
+
             <textarea id="captionInput" placeholder="Enter caption..." required></textarea>
-            <button type="submit">Upload</button>
-        </form>
+            <button id="uploadBtn" type="button">Upload</button>
+        </div>
 
         <p id="status"></p>
     </div>
-
-    <script src="script.js"></script>
 </body>
 </html>

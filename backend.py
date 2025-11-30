@@ -27,7 +27,7 @@ def upload():
 
     return jsonify({
         "message": "Image and caption uploaded successfully!",
-        "saved_caption": dbCaption
+        "result": dbCaption
     }), 200
 
 
