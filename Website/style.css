@@ -1,0 +1,115 @@
+/* Global page style */
+body {
+    margin: 0;
+    padding: 0;
+    background: #0A0A0F;
+    font-family: "Inter", sans-serif;
+    color: #E8F0FF;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Card container */
+.container {
+    background: #11131A;
+    width: 380px;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 0 25px rgba(0, 180, 255, 0.15);
+    border: 1px solid rgba(0, 185, 255, 0.15);
+    backdrop-filter: blur(6px);
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Title */
+.container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #77D0FF;
+}
+
+/* Hide native file input */
+#imageInput {
+    display: none;
+}
+
+/* Custom upload button */
+.fileUploadBtn {
+    display: block;
+    width: 90%;
+    padding: 12px;
+    background: #151821;
+    border: 1px solid #1F2633;
+    border-radius: 12px;
+    color: #DCE9FF;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-bottom: 10px;
+}
+
+.fileUploadBtn:hover {
+    border-color: #29A8FF;
+}
+
+.fileUploadBtn:active {
+    transform: scale(0.98);
+}
+
+/* Inputs */
+textarea {
+    width: 90%;
+    padding: 12px;
+    background: #151821;
+    border: 1px solid #1F2633;
+    border-radius: 12px;
+    color: #DCE9FF;
+    margin-top: 10px;
+    outline: none;
+    transition: 0.2s;
+    resize: none;
+    height: 100px;
+}
+
+textarea:hover {
+    border-color: #29A8FF;
+}
+
+textarea:focus {
+    border-color: #4BCBFF;
+    box-shadow: 0 0 10px rgba(0, 180, 255, 0.3);
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 15px;
+    background: linear-gradient(135deg, #1E90FF, #00C8FF);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    letter-spacing: 0.5px;
+}
+
+button:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 18px rgba(0, 200, 255, 0.5);
+}
+
+/* Status text */
+#status {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.95rem;
+    color: #7FE7FF;
+}

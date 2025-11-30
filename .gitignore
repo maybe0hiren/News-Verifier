@@ -5,5 +5,8 @@ signal_media_context_model.pkl
 signal_media_features.pkl
 context_switch_detection/signalmedia-1m.jsonl.gz
 
+NewsStorage/storage.db
+
 NewsStorage/__pycache__
-ContextSwitch/__pycache__
+ContextSwitch/
+img.avif

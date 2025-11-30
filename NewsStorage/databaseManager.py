@@ -70,6 +70,22 @@ def dbAppendPair(key, caption):
     conn.close()
 
 
+def dbSearch(key):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    caption_cols = [f"caption{i}" for i in range(1, 51)]
+    cols_string = ", ".join(caption_cols)
+    cursor.execute(
+        f"SELECT {cols_string} FROM storage WHERE hash = ?",
+        (key,)
+    )
+    row = cursor.fetchone()
+    conn.close()
+    if not row:
+        return None
+    captions = [c for c in row if c and c.strip()]
+    return captions if captions else []
+
 def addPair(image_path, caption):
     if len(caption) < 5:
         return

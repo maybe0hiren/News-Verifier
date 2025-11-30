@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrueTrace</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>TrueTrace - AI Powered News Verifier</h2>
+
+        <form id="uploadForm">
+
+            <!-- Custom Upload Button -->
+            <label for="imageInput" class="fileUploadBtn"">Select Image</label>
+            <input type="file" id="imageInput" accept="image/*" required>
+
+            <textarea id="captionInput" placeholder="Enter caption..." required></textarea>
+            <button type="submit">Upload</button>
+        </form>
+
+        <p id="status"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

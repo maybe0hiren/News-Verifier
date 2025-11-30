@@ -8,7 +8,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
 from PIL import Image
 import requests
-from databaseManager import addPair  # your existing function
+from databaseManager import addPair
 
 # Hash an image file for deduplication
 def hash_image(path):
