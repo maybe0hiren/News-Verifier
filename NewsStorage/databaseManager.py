@@ -71,7 +71,7 @@ def dbAppendPair(key, caption):
 
 
 def dbSearch(key):
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect('NewsStorage/storage.db')
     cursor = conn.cursor()
     caption_cols = [f"caption{i}" for i in range(1, 51)]
     cols_string = ", ".join(caption_cols)
@@ -85,6 +85,7 @@ def dbSearch(key):
         return None
     captions = [c for c in row if c and c.strip()]
     return captions if captions else []
+
 
 def addPair(image_path, caption):
     if len(caption) < 5:
