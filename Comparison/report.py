@@ -54,14 +54,3 @@ def getReport(sentences):
     )
     report = response.text
     return [similarity, report]
-
-
-
-s1 = "Many people lost their lived in the bomb blast in Mumbai"
-s2 = "Mumai bomb blast shattered many families"
-
-s = [s1, s2]
-
-[similarity, report] = getReport(s)
-print(similarity)
-print(report)
