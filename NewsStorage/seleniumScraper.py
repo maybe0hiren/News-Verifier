@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.chrome.options import Options
 from PIL import Image
 import requests
 from databaseManager import addPair  # your existing function
@@ -15,9 +16,15 @@ def hash_image(path):
         img = img.convert('RGB').resize((128, 128))
         return hashlib.md5(img.tobytes()).hexdigest()
 
-# Setup Chrome WebDriver with longer page load timeout
-driver = webdriver.Chrome()
-driver.set_page_load_timeout(300)  # 300 seconds timeout for page load
+
+options = Options()
+options.page_load_strategy = "eager"
+options.add_experimental_option("prefs", {
+    "profile.managed_default_content_settings.images": 2
+})
+driver = webdriver.Chrome(options=options)
+driver.set_page_load_timeout(60)
+driver.set_script_timeout(60)
 
 try:
     driver.get('https://timesofindia.indiatimes.com/')

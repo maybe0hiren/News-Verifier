@@ -71,6 +71,8 @@ def dbAppendPair(key, caption):
 
 
 def addPair(image_path, caption):
+    if len(caption) < 5:
+        return
     key = generate_pHash(image_path)
 
     if keyExists(key):
