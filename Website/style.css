@@ -114,31 +114,89 @@ button:hover {
     color: #7FE7FF;
 }
 
+/* Result container */
 .result-container {
     width: 90%;
     max-width: 900px;
     margin: 60px auto;
     padding: 35px;
     background: #11131A;
-    border-radius: 15px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    border-radius: 18px;
+    box-shadow: 0 0 25px rgba(0, 180, 255, 0.12);
+    border: 1px solid rgba(0, 185, 255, 0.12);
+    backdrop-filter: blur(6px);
     text-align: center;
     animation: fadeIn 0.35s ease-in-out;
+    color: #E8F0FF;
+    box-sizing: border-box;
 }
 
-.result-text {
-    font-size: 22px;
-    font-weight: 600;
+/* Text inside result box */
+.submitted-text {
+    font-size: 1.1rem;
+    font-weight: 500;
     line-height: 1.6;
-    background: #eef3ff;
+    background: #151821;
     padding: 20px;
-    border-radius: 10px;
-    color: #222;
+    border-radius: 12px;
+    color: #DCE9FF;
+    border: 1px solid #1F2633;
+    box-shadow: 0 0 15px rgba(0, 180, 255, 0.12);
 }
 
+.database-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1.6;
+    background: #151821;
+    padding: 20px;
+    border-radius: 12px;
+    color: #DCE9FF;
+    border: 1px solid #1F2633;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.784);
+}
+
+.reportGood-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1.6;
+    background: #151821;
+    padding: 20px;
+    border-radius: 12px;
+    color: #DCE9FF;
+    border: 1px solid #1F2633;
+    box-shadow: 0 0 15px rgba(43, 255, 0, 0.709);
+}
+
+.reportOkay-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1.6;
+    background: #151821;
+    padding: 20px;
+    border-radius: 12px;
+    color: #DCE9FF;
+    border: 1px solid #1F2633;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.722);
+}
+
+
+.reportBad-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1.6;
+    background: #151821;
+    padding: 20px;
+    border-radius: 12px;
+    color: #DCE9FF;
+    border: 1px solid #1F2633;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.697);
+}
+
+
+/* Fade-in animation */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
 }
-
 

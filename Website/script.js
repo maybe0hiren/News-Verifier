@@ -5,6 +5,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const uploadBtn = document.getElementById("uploadBtn");
     const statusEl = document.getElementById("status");
 
+    function selectColour(percentage){
+        if(percentage < 70){
+            return "reportBad-text"
+        }
+        else if(percentage >=70 && percentage < 90){
+            return "reportOkay-text"
+        }
+        else{
+            return "reportGood-text"
+        }
+    }
+
     imageInput.addEventListener("change", () => {
         const file = imageInput.files[0];
         if (file) {
@@ -60,8 +72,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             resultContainer.innerHTML = `
                 <h2>TrueTrace Result</h2>
-                <p class="result-text">
-                    ${result.result || "No result found"}
+                <p class="submitted-text">
+                    ${caption || "No result found"}
+                </p>
+                <p class="database-text">
+                    ${result.dbCaption || "No result found"}
+                </p>
+                <p class=${selectColour(result.similarity)}>
+                    We have ${"a " + result.similarity + "%" || "no"} match!<br>
+                    ${result.report || "No result found"}
                 </p>
             `;
 

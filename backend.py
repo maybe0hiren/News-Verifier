@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 from NewsStorage.databaseManager import dbSearch, generate_pHash
+from Comparison.report import getReport
 
 app = Flask(__name__)
 CORS(app)
@@ -25,9 +26,16 @@ def upload():
     dbCaption = dbSearch(key)
     print(dbCaption)
 
+    articles = [str(caption), str(dbCaption)]
+    [similarity, report] = getReport(articles)
+    similarity = str(similarity)
+    report = str(report)
+
     return jsonify({
         "message": "Image and caption uploaded successfully!",
-        "result": dbCaption
+        "dbCaption": dbCaption,
+        "similarity": similarity,
+        "report" : report
     }), 200
 
 

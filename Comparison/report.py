@@ -45,7 +45,7 @@ def getReport(sentences):
                 4. Are the words twisted to change the meaning?
                 Don't give me any extra replies like Here's your caption and all. Just do the work...
                 All I need is 2-3 lines and that's all.. Include all the points in those lines
-                Dont refer to them as article 1 or 2. Refer the second article as "submitted article" and the first as articles present in database
+                Dont refer to them as article 1 or 2. Refer the first article as "submitted article" and the second as article present in database
             """
 
     response = client.models.generate_content(
