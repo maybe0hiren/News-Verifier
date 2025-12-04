@@ -3,6 +3,8 @@ from flask_cors import CORS
 import os
 from NewsStorage.databaseManager import dbSearch, generate_pHash
 from Comparison.report import getReport
+from ContextSwitch.context_model import ContextModel
+import json
 
 app = Flask(__name__)
 CORS(app)
