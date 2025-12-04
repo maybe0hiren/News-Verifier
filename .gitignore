@@ -5,6 +5,7 @@ uploads
 
 *.db
 *.avif
+*.pth
 
 __pycache__/
-
+Documentation
