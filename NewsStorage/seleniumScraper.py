@@ -1,4 +1,5 @@
-import os
+import sys, os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import time
 import hashlib
 from selenium import webdriver
@@ -9,6 +10,7 @@ from selenium.webdriver.chrome.options import Options
 from PIL import Image
 import requests
 from databaseManager import addPair
+from ContextSwitch.interface import getPrimaryCaption 
 
 # Hash an image file for deduplication
 def hash_image(path):
@@ -67,6 +69,7 @@ for idx, img in enumerate(img_elements):
             parent = img.find_element(By.XPATH, '..')
             caption = caption or parent.text
             caption = caption.replace("Article image for: ", "")
+            # caption = getPrimaryCaption(caption)
         except Exception:
             pass
         # Save image path using your DB function

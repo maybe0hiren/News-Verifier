@@ -7,5 +7,10 @@ uploads
 *.avif
 *.pth
 
+
+ContextSwitch/content
+ContextSwitch/nltk
+ContextSwitch/torch
+
 __pycache__/
 Documentation
